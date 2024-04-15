@@ -5,7 +5,7 @@ def lambda_handler(event, context):
     # Initialize the SNS client
     sns = boto3.client('sns')
     
-    # Specify the ARN of your SNS topic
+    # Specify the ARN of SNS topic
     topic_arn = 'arn:aws:sns:eu-central-1:360980374647:my-notification-topic'
     
     # Process each record from the S3 bucket event
