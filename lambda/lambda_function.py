@@ -1,12 +1,30 @@
 import json
-import boto3 # type: ignore
+import os # for env variable set up
+import boto3
+
+def env_topic_arn():
+    ssm = boto3.client('ssm')
+    default_region = "eu-central-1"
+
+    region = os.getenv('AWS_REGION', default_region)
+
+    response = ssm.get_parameter(
+        Name='accountID',
+        WithDecryption=True
+    )
+    my_account_id = response['Parameter']['Value']
+    my_topic_name = "my-notification-topic"
+    topic_arn = f"arn:aws:sns:{region}:{my_account_id}:{my_topic_name}"
+    
+    return topic_arn
 
 def lambda_handler(event, context):
     # Initialize the SNS client
     sns = boto3.client('sns')
     
+    
     # Specify the ARN of SNS topic
-    topic_arn = 'arn:aws:sns:eu-central-1:360980374647:my-notification-topic'
+    topic_arn = env_topic_arn()
     
     # Process each record from the S3 bucket event
     for record in event['Records']:

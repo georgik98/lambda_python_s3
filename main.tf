@@ -1,23 +1,23 @@
 # Initialize provider (region)
 provider "aws" {
-  region = "eu-central-1"
+  region = var.default_region
 }
 
 # Create SNS service
 resource "aws_sns_topic" "my_topic" {
-  name = "my-notification-topic"
+  name = var.sns_name
 }
 
 # Send SNS email
 resource "aws_sns_topic_subscription" "email_subscription" {
   topic_arn = aws_sns_topic.my_topic.arn
   protocol  = "email"
-  endpoint  = "georgipetrovkolev1998@gmail.com"
+  endpoint  = var.my_email
 }
 
 # Create S3 bucket
 resource "aws_s3_bucket" "my_bucket" {
-  bucket = "my-s3-bucket-georgik16-123123-1231"
+  bucket = var.my_s3_bucket
 }
 
 
@@ -89,7 +89,8 @@ resource "aws_iam_policy" "lambda_policy" {
           "logs:CreateLogStream",
           "logs:PutLogEvents",
           "sns:Publish",
-          "s3:GetObject"
+          "s3:GetObject",
+          "ssm:GetParameter"
         ],
         Resource = "*",
         Effect   = "Allow",
